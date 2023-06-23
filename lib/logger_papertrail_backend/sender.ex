@@ -17,7 +17,7 @@ defmodule LoggerPapertrailBackend.Sender do
     {:ok, %State{socket: socket}}
   end
 
-  def start_link() do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
