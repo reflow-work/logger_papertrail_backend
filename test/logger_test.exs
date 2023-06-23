@@ -6,9 +6,13 @@ defmodule LoggerPapertrailBackend.LoggerTest do
   @port 29123
 
   setup do
-    :ok = Application.put_env(:logger, :backends, [ LoggerPapertrailBackend.Logger ])
-    :ok = Application.put_env(:logger, :logger_papertrail_backend,
-      url: "papertrail://localhost:#{@port}/#{@system_name}")
+    :ok = Application.put_env(:logger, :backends, [LoggerPapertrailBackend.Logger])
+
+    :ok =
+      Application.put_env(:logger, :logger_papertrail_backend,
+        url: "papertrail://localhost:#{@port}/#{@system_name}"
+      )
+
     Application.ensure_started(:logger)
     MockPapertrailServer.start(@port, self())
     :ok
@@ -36,23 +40,23 @@ defmodule LoggerPapertrailBackend.LoggerTest do
 
   describe "metadata_filter" do
     test "can configure matching value for a metadata key" do
-      config metadata_filter: [md_key: true]
+      config(metadata_filter: [md_key: true])
       Logger.debug("shouldn't", md_key: false)
       Logger.debug("but would", md_key: true)
       assert_receive {:ok, message}, 5000
       assert message =~ "would"
       refute_received {:ok, _}
-      config metadata_filter: nil
+      config(metadata_filter: nil)
     end
+
     test "empty keyword-list should pass" do
-      config metadata_filter: []
+      config(metadata_filter: [])
       Logger.debug("should", md_key: false)
       assert_receive {:ok, message}, 5000
       assert message =~ "should"
-      config metadata_filter: nil
+      config(metadata_filter: nil)
     end
   end
-
 
   defp config(opts) do
     Logger.configure_backend(LoggerPapertrailBackend.Logger, opts)

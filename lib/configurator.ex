@@ -32,26 +32,36 @@ defmodule LoggerPapertrailBackend.Configurator do
   in the form of `[host: "hostname:port", system_name: "my_system_name"]`.
   `system_name` is optional.
   """
-  @spec configure_papertrail_target(configuration :: list) :: %Configuration{ host: binary, port: integer, system_name: binary}
+  @spec configure_papertrail_target(configuration :: list) :: %Configuration{
+          host: binary,
+          port: integer,
+          system_name: binary
+        }
   def configure_papertrail_target(configuration) when is_list(configuration) do
     configuration
     |> Enum.into(%{})
     |> configure_target
   end
+
   def configure_papertrail_target(configuration), do: configure_target(configuration)
 
   # private parts
   defp configure_target(%{url: url}), do: configure_target(URI.parse(url))
+
   defp configure_target(%URI{host: host, path: path, port: port}) do
     system_name = path |> clean_path
-    %Configuration{ host: host, port: port, system_name: system_name }
+    %Configuration{host: host, port: port, system_name: system_name}
   end
+
   defp configure_target(%{host: host_config, system_name: system_name}) do
     "papertrail://#{host_config}/#{system_name}"
-    |> URI.parse
+    |> URI.parse()
     |> configure_target
   end
-  defp configure_target(%{host: host_config}), do: configure_target(%{host: host_config, system_name: nil})
+
+  defp configure_target(%{host: host_config}),
+    do: configure_target(%{host: host_config, system_name: nil})
+
   defp configure_target(config) do
     raise(LoggerPapertrailBackend.ConfigurationError, "Unknown configuration: #{inspect(config)}")
   end
