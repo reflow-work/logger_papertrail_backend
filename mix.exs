@@ -18,7 +18,7 @@ defmodule LoggerPapertrailBackend.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [], mod: {LoggerPapertrailBackend, []}]
+    [applications: [:logger], mod: {LoggerPapertrailBackend, []}]
   end
 
   # Dependencies can be Hex packages:
