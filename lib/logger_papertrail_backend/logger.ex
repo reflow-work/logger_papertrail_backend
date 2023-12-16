@@ -5,7 +5,7 @@ defmodule LoggerPapertrailBackend.Logger do
 
   # Most of this is shamelessy copied from :console-backend
 
-  @default_format "[$level] $levelpad$metadata $message"
+  @default_format "[$level] $metadata $message"
 
   def init(__MODULE__) do
     if Process.whereis(:user) do
